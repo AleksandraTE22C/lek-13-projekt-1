@@ -1,3 +1,5 @@
+//Aleksandra Kajak-Tonkiel TE22C
+
 import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
