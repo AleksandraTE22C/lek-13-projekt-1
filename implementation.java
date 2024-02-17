@@ -21,16 +21,26 @@ public class implementation{
     static Map<String, Integer> leaderboard = new HashMap<>();
 
     public static void main (String[] args) throws InterruptedException{
-        while(pHealth>0){
+        int score = 50;
         System.out.print("Enter player name: ");
         String name = enter.next();
-        System.out.println("Your turn");
-        int score = 40;
 
-        score = battle(35, 55, score);
-        score = battle(40, 70, score);
-        score = battle(50, 85, score);
+        while(pHealth>0){
+        score = battle(25, 55, score);
+        score = battle(35, 70, score);
+        score = battle(50, 100, score);
+        if(pHealth > 0 && score > 14){
+            System.out.println("BOSS INCOMING");
+        }
         score = bossBattle(100, 100, score);
+        if (score < 15 && pHealth > 0) {
+            System.out.println("You ran out of points!");
+            break;
+        }
+        if(pHealth < 0){
+            System.out.println("GAME OVER");
+            break;
+        }
         }
     }
 
@@ -38,95 +48,118 @@ public class implementation{
         while (pHealth > 0 && mHealth > 0 && score > 14) {
             round++;
             Thread.sleep(800);
+            System.out.println("Your turn");
             System.out.println("Round " + round);
             System.out.println("How will you attack?");
             System.out.println("Monster's HP: " + mHealth);
             System.out.println("Your HP: " + pHealth);
             System.out.println("Points: " + score);
             Thread.sleep(500);
-            System.out.println("1. Throw rock (-15 points)");
+            System.out.println("1. Zap (-15 points)");
             System.out.println("2. Cast Freeze(-25 points)");
-            System.out.println("3. Cast Fireball (-50 points)");
+            System.out.println("3. Cast Fireball (-35 points)");
+            System.out.println("4. +20 HP (-20 points)");
             int atk = enter.nextInt();
-            dmgResult result = calcDmg(atk, score);
-            score = result.score;
-            int dmg = result.dmg;
 
-                System.out.println("You did " + dmg + " damage!");
-                mHealth -= dmg;
+            if (atk == 4) {
+                if (score >= 20) {
+                    score -= 20;
+                    pHealth += 20;
+                    if (pHealth > 100) {
+                        pHealth = 100;
+                    }
+                    System.out.println("You regenerated 20 HP!");
+                } else {
+                System.out.println("Not enough points!");
+                }
+                } else {
+                  dmgResult result = calcDmg(atk, score);
+                   score = result.score;
+                  int dmg = result.dmg;
 
-                if (mHealth <= 0) {
-                    System.out.println("Monster defeated!");
-                    score += scorePlus;
-                    round = 0;
+                   if (dmg > 0) {
+                       System.out.println("You did " + dmg + " damage!");
+                       mHealth -= dmg;
+                  } else {
+                     System.out.println("You missed!");
+                   }
+
+                    if (mHealth <= 0) {
+                        System.out.println("Monster defeated!");
+                        score += scorePlus;
+                        round = 0;
+                        Thread.sleep(800);
+                        System.out.println("A new monster appeared!");
+                        break;
+                    }
+
                     Thread.sleep(800);
-                    System.out.println("A new monster appeared!");
-                    System.out.println("Your turn");
-                    break;
+                    System.out.println("Enemy's turn");
+                    int mAtk = roll.nextInt(30) + 1;
+                    System.out.println("The monster did " + mAtk + " damage!");
+                    pHealth -= mAtk;
                 }
-
-                Thread.sleep(800);
-                System.out.println("Enemy's turn");
-                int mAtk = roll.nextInt(30) + 1;
-                System.out.println("The monster did " + mAtk + " damage!");
-                pHealth -= mAtk;
-                if (score <= 0) {
-                    System.out.println("You ran out of points!");
-                    break;
-                }
-                if (pHealth <= 0) {
-                    System.out.println("GAME OVER");
-                    break;
-                }
-            }
-            return score;
+            } return score;
         }
 
     static int bossBattle(int bossHealth, int scorePlus, int score) throws InterruptedException {
         while (pHealth > 0 && bossHealth > 0 && score > 14) {
             round++;
             Thread.sleep(800);
+            System.out.println("Your turn");
             System.out.println("Round " + round);
             System.out.println("How will you attack?");
-            System.out.println("Boss's HP: " + bossHealth);
+            System.out.println("BOSS's HP: " + bossHealth);
             System.out.println("Your HP: " + pHealth);
             System.out.println("Points: " + score);
             Thread.sleep(500);
-            System.out.println("1. Throw rock (-15 points)");
+            System.out.println("1. Zap (-15 points)");
             System.out.println("2. Cast Freeze(-25 points)");
-            System.out.println("3. Cast Fireball (-50 points)");
+            System.out.println("3. Cast Fireball (-35 points)");
+            System.out.println("4. +20 HP (-20 points)");
             int atk = enter.nextInt();
-            dmgResult result = calcDmg(atk, score);
-            score = result.score;
-            int dmg = result.dmg;
 
-            if (dmg > 0) {
-                System.out.println("You did " + dmg + " damage!");
-                bossHealth -= dmg;
+            if (atk == 4) {
+                if (score >= 20) {
+                    score -= 20;
+                    pHealth += 20;
+                    if (pHealth > 100) {
+                        pHealth = 100;
+                    }
+                    System.out.println("You regenerated 20 HP!");
+                } else {
+                    System.out.println("Not enough points!");
+                }
             } else {
-                System.out.println("You missed!");
-            }
+                dmgResult result = calcDmg(atk, score);
+                score = result.score;
+                int dmg = result.dmg;
 
-            if (bossHealth <= 0) {
-                System.out.println("Boss defeated!");
-                System.out.println("You won!");
-                score += scorePlus;
-                round = 0;
-                break;
-            }
+                if (dmg > 0) {
+                    System.out.println("You did " + dmg + " damage!");
+                    bossHealth -= dmg;
+                } else {
+                    System.out.println("You missed!");
+                }
 
-            Thread.sleep(800);
-            System.out.println("Enemy's turn");
-            int mAtk = roll.nextInt(30) + 1;
-            System.out.println("The monster did " + mAtk + " damage!");
-            pHealth -= mAtk;
-            if (pHealth <= 0) {
-                System.out.println("GAME OVER");
-                break;
-            }
+                if (bossHealth <= 0) {
+                    System.out.println("BOSS defeated!");
+                    System.out.println("YOU WIN");
+                    score += scorePlus;
+                    round = 0;
+                    break;
+                }
+
+                Thread.sleep(800);
+                System.out.println("BOSS's turn");
+                int mAtk = roll.nextInt(30) + 1;
+                System.out.println("The BOSS did " + mAtk + " damage!");
+                pHealth -= mAtk;
+            }   
         }
         return score;
     }
+
 
     static dmgResult calcDmg(int atk, int score) {
         int updScore = score;
@@ -136,6 +169,12 @@ public class implementation{
                 if (score > 14) {
                     updScore -= 15;
                     dmg = roll.nextInt(25);
+                    if(dmg > 0 && dmg < 25){
+                        dmg += 5;
+                        if(dmg > 25){
+                            dmg = 25;
+                        }
+                    }
                 } else {
                     System.out.println("Not enough points!");
                 }
@@ -144,16 +183,28 @@ public class implementation{
             case 2:
                 if (score > 24) {
                     updScore -= 25;
-                    dmg = roll.nextInt(50);
+                    dmg = roll.nextInt(35);
+                    if(dmg > 0 && dmg < 35){
+                        dmg += 10;
+                        if(dmg > 35){
+                            dmg = 35;
+                        }
+                    }
                 } else {
                     System.out.println("Not enough points!");
                 }
                 break;
     
             case 3:
-                if (score > 49) {
-                    updScore -= 50;
-                    dmg = roll.nextInt(75);
+                if (score > 35) {
+                    updScore -= 35;
+                    dmg = roll.nextInt(45);
+                    if(dmg > 0 && dmg < 45){
+                        dmg += 15;
+                        if(dmg > 45){
+                            dmg = 45;
+                        }
+                    }
                 } else {
                     System.out.println("Not enough points!");
                 }
