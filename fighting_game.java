@@ -24,7 +24,7 @@ class dmgResult {
 }
 
 //Main class for game functionality
-public class implementation{
+public class fighting_game{
     private static final String board = "leaderboard.txt"; //Defines the file path as constant
     static Random roll = new Random(); //Initialises random number generator
     static Scanner enter = new Scanner(System.in);
